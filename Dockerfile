@@ -18,7 +18,7 @@ RUN \
     linux-headers \
     openssl-dev \
     pcsc-lite-dev \
-    subversion && \
+    git && \
   echo "**** install runtime packages ****" && \
   apk add --no-cache \
     ccid \
@@ -27,11 +27,10 @@ RUN \
     pcsc-lite \
     pcsc-lite-libs && \
   echo "**** compile oscam ****" && \
-  if [ -z ${OSCAM_VERSION+x} ]; then \
-    OSCAM_VERSION=$(svn info --show-item revision https://svn.streamboard.tv/oscam/trunk ); \
-  fi && \
-  svn checkout https://svn.streamboard.tv/oscam/trunk@${OSCAM_VERSION} /tmp/oscam-svn && \
-  cd /tmp/oscam-svn && \
+  git clone https://github.com/oscam-emu/oscam-patched.git /tmp/oscam-emu && \
+  cd /tmp/oscam-emu && \
+  git fetch --tags && \
+  git checkout $(git tag -l | tail -1) && \
   ./config.sh \
     --enable all \
     --disable \
